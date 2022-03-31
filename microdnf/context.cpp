@@ -749,7 +749,13 @@ static std::pair<std::vector<std::string>, std::vector<std::string>> complete_pa
 }
 
 std::vector<std::string> match_specs(
-    Context & ctx, const std::string & pattern, bool installed, bool available, bool paths, bool nevra_for_same_name) {
+    Context & ctx,
+    const std::string & pattern,
+    bool installed,
+    bool available,
+    bool paths,
+    bool nevra_for_same_name,
+    std::vector<const char *> globs) {
     auto & base = ctx.base;
 
     base.get_config().assumeno().set(libdnf::Option::Priority::RUNTIME, true);
@@ -819,7 +825,13 @@ std::vector<std::string> match_specs(
     std::vector<std::string> file_paths;
     std::vector<std::string> dir_paths;
     if (paths) {
-        std::tie(file_paths, dir_paths) = complete_paths(pattern, "*.rpm");
+        for (const auto & glob : globs) {
+            std::vector<std::string> glob_file_paths;
+            std::vector<std::string> glob_dir_paths;
+            std::tie(glob_file_paths, glob_dir_paths) = complete_paths(pattern, glob);
+            file_paths.insert(file_paths.end(), glob_file_paths.begin(), glob_file_paths.end());
+            dir_paths.insert(dir_paths.end(), glob_dir_paths.begin(), glob_dir_paths.end());
+        }
         std::sort(file_paths.begin(), file_paths.end());
         std::sort(dir_paths.begin(), dir_paths.end());
     }

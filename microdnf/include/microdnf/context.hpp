@@ -128,7 +128,13 @@ void parse_add_specs(
 /// Returns the names of matching packages and paths of matching package file names and directories.
 /// If `nevra_for_same_name` is true, it returns a full nevra for packages with the same name.
 std::vector<std::string> match_specs(
-    Context & ctx, const std::string & pattern, bool installed, bool available, bool paths, bool nevra_for_same_name);
+    Context & ctx,
+    const std::string & pattern,
+    bool installed,
+    bool available,
+    bool paths,
+    bool nevra_for_same_name,
+    std::vector<const char *> globs = {"*.rpm"});
 
 }  // namespace microdnf
 
