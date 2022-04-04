@@ -69,6 +69,7 @@ class Transaction;
 
 namespace libdnf::rpm {
 
+class PackageSet;
 class PackageSack;
 using PackageSackWeakPtr = WeakPtr<PackageSack, false>;
 
@@ -88,7 +89,30 @@ public:
     /// Returns number of solvables in pool.
     int get_nsolvables() const noexcept;
 
+    /// Sets excluded and included packages according to the configuration.
+    /// Uses the `disable_excludes`, `excludepkgs`, and `includepkgs` configuration options for calculation.
+    /// @param only_main If `true`, the repository specific configurations are not used.
+    /// @since 5.0
+    // TODO(mblaha): do we have a use case for only_main=true? Is the parameter needed?
     void setup_excludes_includes(bool only_main = false);
+
+    /// Returns currently excluded package set
+    const PackageSet get_excludes();
+
+    /// Add package set to excluded packages
+    /// @param excludes: packages to add to excludes
+    /// @since 5.0
+    void add_excludes(const PackageSet & excludes);
+
+    /// Remove package set from excluded packages
+    /// @param excludes: packages to remove from excludes
+    /// @since 5.0
+    void remove_excludes(const PackageSet & excludes);
+
+    /// Resets excluded packages to new value
+    /// @param excludes: packages to exclude
+    /// @since 5.0
+    void set_excludes(const PackageSet & excludes);
 
 private:
     friend libdnf::Goal;

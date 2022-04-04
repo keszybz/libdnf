@@ -187,6 +187,35 @@ void PackageSack::Impl::setup_excludes_includes(bool only_main) {
     }
 }
 
+const PackageSet PackageSack::Impl::get_excludes() {
+    if (pkg_excludes) {
+        return PackageSet(base, *pkg_excludes);
+    } else {
+        return PackageSet(base);
+    }
+}
+
+void PackageSack::Impl::add_excludes(const PackageSet & excludes) {
+    if (pkg_excludes) {
+        *pkg_excludes |= *excludes.p_impl;
+    } else {
+        pkg_excludes.reset(new libdnf::solv::SolvMap(*excludes.p_impl));
+    }
+    considered_uptodate = false;
+}
+
+void PackageSack::Impl::remove_excludes(const PackageSet & excludes) {
+    if (pkg_excludes) {
+        *pkg_excludes -= *excludes.p_impl;
+        considered_uptodate = false;
+    }
+}
+
+void PackageSack::Impl::set_excludes(const PackageSet & excludes) {
+    pkg_excludes.reset(new libdnf::solv::SolvMap(*excludes.p_impl));
+    considered_uptodate = false;
+}
+
 std::optional<libdnf::solv::SolvMap> PackageSack::Impl::compute_considered_map(libdnf::sack::ExcludeFlags flags) const {
     if ((static_cast<bool>(flags & libdnf::sack::ExcludeFlags::IGNORE_REGULAR_EXCLUDES) ||
          (!pkg_excludes && !pkg_includes)) &&
@@ -275,6 +304,22 @@ PackageSack::~PackageSack() = default;
 
 void PackageSack::setup_excludes_includes(bool only_main) {
     p_impl->setup_excludes_includes(only_main);
+}
+
+const PackageSet PackageSack::get_excludes() {
+    return p_impl->get_excludes();
+}
+
+void PackageSack::add_excludes(const PackageSet & excludes) {
+    p_impl->add_excludes(excludes);
+}
+
+void PackageSack::remove_excludes(const PackageSet & excludes) {
+    p_impl->remove_excludes(excludes);
+}
+
+void PackageSack::set_excludes(const PackageSet & excludes) {
+    p_impl->set_excludes(excludes);
 }
 
 }  // namespace libdnf::rpm
