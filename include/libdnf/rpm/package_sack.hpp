@@ -113,6 +113,24 @@ public:
     /// @param excludes: packages to exclude
     /// @since 5.0
     void set_excludes(const PackageSet & excludes);
+    //
+    /// Returns currently included package set
+    const PackageSet get_includes();
+
+    /// Add package set to included packages
+    /// @param includes: packages to add to includes
+    /// @since 5.0
+    void add_includes(const PackageSet & includes);
+
+    /// Remove package set from included packages
+    /// @param includes: packages to remove from includes
+    /// @since 5.0
+    void remove_includes(const PackageSet & includes);
+
+    /// Resets included packages to new value
+    /// @param includes: packages to include
+    /// @since 5.0
+    void set_includes(const PackageSet & includes);
 
 private:
     friend libdnf::Goal;

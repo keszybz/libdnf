@@ -98,6 +98,11 @@ public:
     void remove_excludes(const PackageSet & excludes);
     void set_excludes(const PackageSet & excludes);
 
+    const PackageSet get_includes();
+    void add_includes(const PackageSet & includes);
+    void remove_includes(const PackageSet & includes);
+    void set_includes(const PackageSet & includes);
+
     /// Computes considered map.
     /// If there are no excluded packages, the considered map may not be present in the return value.
     std::optional<libdnf::solv::SolvMap> compute_considered_map(libdnf::sack::ExcludeFlags flags) const;
