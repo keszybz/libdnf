@@ -131,7 +131,7 @@ void RepoqueryCommand::run() {
         }
     } else {
         // TODO(lukash) this is inconvenient, we should try to call it automatically at the right time in libdnf
-        ctx.base.get_rpm_package_sack()->setup_excludes_includes();
+        ctx.base.get_rpm_package_sack()->add_excludes_includes_from_config();
     }
 
     libdnf::rpm::PackageSet result_pset(ctx.base);

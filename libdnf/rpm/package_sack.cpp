@@ -89,7 +89,7 @@ void PackageSack::Impl::make_provides_ready() {
     get_pool(base).swap_considered_map(original_considered_map);
 }
 
-void PackageSack::Impl::setup_excludes_includes(bool only_main) {
+void PackageSack::Impl::add_excludes_includes_from_config(bool only_main) {
     considered_uptodate = false;
 
     const auto & main_config = base->get_config();
@@ -173,17 +173,20 @@ void PackageSack::Impl::setup_excludes_includes(bool only_main) {
     }
 
     if (includes_used) {
-        pkg_includes.reset(new libdnf::solv::SolvMap(0));
-        if (includes_exist) {
-            *pkg_includes = *includes.p_impl;
+        if (!pkg_includes) {
+            pkg_includes.reset(new libdnf::solv::SolvMap(0));
         }
-    } else {
-        pkg_includes.reset();
+        if (includes_exist) {
+            *pkg_includes |= *includes.p_impl;
+        }
     }
 
     if (excludes_exist) {
-        pkg_excludes.reset(new libdnf::solv::SolvMap(0));
-        *pkg_excludes = *excludes.p_impl;
+        if (pkg_excludes) {
+            *pkg_excludes |= *excludes.p_impl;
+        } else {
+            pkg_excludes.reset(new libdnf::solv::SolvMap(*excludes.p_impl));
+        }
     }
 }
 
@@ -335,8 +338,8 @@ PackageSack::PackageSack(libdnf::Base & base) : PackageSack(base.get_weak_ptr())
 
 PackageSack::~PackageSack() = default;
 
-void PackageSack::setup_excludes_includes(bool only_main) {
-    p_impl->setup_excludes_includes(only_main);
+void PackageSack::add_excludes_includes_from_config(bool only_main) {
+    p_impl->add_excludes_includes_from_config(only_main);
 }
 
 const PackageSet PackageSack::get_excludes() {

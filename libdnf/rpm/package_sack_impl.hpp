@@ -91,7 +91,7 @@ public:
     /// Invalidates the Pool's considered map, sets `considered_uptodate` to `false` to mark it needs to be recomputed.
     /// @param only_main If `true`, only `excludepkgs` and `includepkgs` from the main config are recomputed.
     // TODO(jrohel): Is param `only_main` needed? Used in DNF4 with commandline repo.
-    void setup_excludes_includes(bool only_main = false);
+    void add_excludes_includes_from_config(bool only_main = false);
 
     const PackageSet get_excludes();
     void add_excludes(const PackageSet & excludes);

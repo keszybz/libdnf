@@ -94,7 +94,7 @@ public:
     /// @param only_main If `true`, the repository specific configurations are not used.
     /// @since 5.0
     // TODO(mblaha): do we have a use case for only_main=true? Is the parameter needed?
-    void setup_excludes_includes(bool only_main = false);
+    void add_excludes_includes_from_config(bool only_main = false);
 
     /// Returns currently excluded package set
     const PackageSet get_excludes();
